@@ -100,6 +100,9 @@ show-mcu:
 program:
 	avrdude -pm8 -Pusb -cavrispmkII  -B10 -u -U flash:w:$(PROJECT).hex 
 
+AS7-tempate:
+	rm -f usring-2.1-AS7-template.zip
+	zip usring-2.1-AS7-template.zip MyTemplate.vstemplate __TemplateIcon.ico usring.cppproj main.cpp sensor.h sensor.c usring.cpp usring.h twislave.h twislave.c uart.h uart.c
 
 
 fuse:
