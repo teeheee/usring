@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name usring-rescue)(type Legacy)(uri ${KIPRJMOD}/usring-rescue.lib)(options "")(descr ""))
+  (lib (name owned)(type Legacy)(uri /home/alex/Dokumente/kicadlibs/owned.lib)(options "")(descr ""))
+)
