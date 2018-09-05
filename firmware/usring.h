@@ -1,8 +1,8 @@
 #ifndef _USRING_
 #define _USRING_
 
-#define F_CPU   14745000UL
-#define USRING_I2C_ADDRESS 0x20
+#define F_CPU   8000000UL
+#define USRING_I2C_ADDRESS 0x69
 #define USRING_BAUDRATE 9600UL
 
 #include <avr/io.h>         

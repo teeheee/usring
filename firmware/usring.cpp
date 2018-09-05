@@ -10,7 +10,7 @@ Usring::Usring()
 {
   init_sensors();
   uart_init(UART_BAUD_SELECT(9600, F_CPU));
-  init_twi_slave(0x69);
+  init_twi_slave(USRING_I2C_ADDRESS);
 }
 	
 void Usring::getDifferenceValue(int* valueBuffer)

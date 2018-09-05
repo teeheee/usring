@@ -1,8 +1,4 @@
-
-
 #include "usring.h"
-
-
 
 Usring ring;
 
@@ -54,7 +50,13 @@ void ausgeben()
     ring.setI2C(x+2, werte[x]);
 }
 
-
+void lesen()
+{
+	uint8_t global_th_value = ring.getI2C(1);
+	if(global_th_value > 0)
+		for (int x = 0; x < 16; x++)
+			mittelwert[x] = global_th_value;
+}
 
 int main (void) {
   kalibrieren();
@@ -62,5 +64,6 @@ int main (void) {
     messen();
     berechnen();
     ausgeben();
+	lesen();
   }                
 }

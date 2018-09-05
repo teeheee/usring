@@ -4,11 +4,14 @@
  * Created: 05.02.2016 20:01:24
  *  Author: alexander
  */
-#define F_CPU   14745000UL
-#include <util/delay.h>
 
 #include "sensor.h"
 
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
+#include <util/delay.h>
 
 void init_sensors()
 {
@@ -25,9 +28,9 @@ void init_sensors()
 	PORTD &= ~((1 << PD5) | (1 << PD6));
 
 	// die Versorgungsspannung AVcc als Referenz wählen:
-	ADMUX = (1 << REFS0);
+	//ADMUX = (1 << REFS0);
 	// oder interne Referenzspannung als Referenz für den ADC wählen:
-	// ADMUX = (1<<REFS1) | (1<<REFS0);
+    ADMUX = (1<<REFS1) | (1<<REFS0);
 
 	// Bit ADFR ("free running") in ADCSRA steht beim Einschalten
 	// schon auf 0, also single conversion
@@ -60,7 +63,6 @@ uint16_t get_value(uint8_t i)
 	{
 		PORT_0 &= ~((1 << A0) | (1 << B0) | (1 << C0));
 		PORT_0 |=  (index << C0);
-		//ADC_Read(0);
 		return ADC_Read(0);
 	}
 	else if (index < 16)
@@ -68,7 +70,6 @@ uint16_t get_value(uint8_t i)
 		index -= 8;
 		PORT_1 &= ~((1 << A1) | (1 << B1) | (1 << C1));
 		PORT_1 |=  (index << C1);
-		//ADC_Read(1);
 		return ADC_Read(1);
 	}
 	return 0;
@@ -76,6 +77,11 @@ uint16_t get_value(uint8_t i)
 }
 
 #define LEDDELAY 800
+
+int abs(int a)
+{
+	return a>0?a:-a;
+}
 
 void getdiffValue(int* valuebuffer)
 {
@@ -86,13 +92,15 @@ void getdiffValue(int* valuebuffer)
 	_delay_us(LEDDELAY);
 	for ( x = 0; x < SENSOR_COUNT; x++)
 	{
-		temp[x] = (get_value(x));
+		temp[x] = get_value(x);
 	}
 	ledOff();
 	_delay_us(LEDDELAY);
 	for ( x = 0; x < SENSOR_COUNT; x++)
 	{
-		valuebuffer[x] = (get_value(x) - temp[x]);
+		valuebuffer[x] = abs(temp[x]-get_value(x));
+		if(valuebuffer[x] > 255)
+			valuebuffer[x] = 255;
 	}
 }
 

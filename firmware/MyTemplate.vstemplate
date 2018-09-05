@@ -1,7 +1,7 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
     <Name>usring</Name>
-    <Description>usring Firmware Version 2.1</Description>
+    <Description>Firmware</Description>
     <ProjectType>CandCPP</ProjectType>
     <ProjectSubType>
     </ProjectSubType>
@@ -17,14 +17,14 @@
     <Project TargetFileName="usring.cppproj" File="usring.cppproj" ReplaceParameters="true">
       <Folder Name="libm" TargetFolderName="libm" />
       <ProjectItem ReplaceParameters="true" TargetFileName="main.cpp">main.cpp</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="usring.h">usring.h</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="usring.cpp">usring.cpp</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="uart.h">uart.h</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="uart.c">uart.c</ProjectItem>     
-      <ProjectItem ReplaceParameters="true" TargetFileName="twislave.h">twislave.h</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="twislave.c">twislave.c</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="sensor.h">sensor.h</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="sensor.c">sensor.c</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="sensor.h">sensor.h</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="twislave.c">twislave.c</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="twislave.h">twislave.h</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="uart.c">uart.c</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="uart.h">uart.h</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="usring.cpp">usring.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="usring.h">usring.h</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>
