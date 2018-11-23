@@ -28,9 +28,9 @@ void init_sensors()
 	PORTD &= ~((1 << PD5) | (1 << PD6));
 
 	// die Versorgungsspannung AVcc als Referenz wählen:
-	//ADMUX = (1 << REFS0);
+	ADMUX = (1 << REFS0);
 	// oder interne Referenzspannung als Referenz für den ADC wählen:
-    ADMUX = (1<<REFS1) | (1<<REFS0);
+        // ADMUX = (1<<REFS1) | (1<<REFS0);
 
 	// Bit ADFR ("free running") in ADCSRA steht beim Einschalten
 	// schon auf 0, also single conversion
@@ -98,9 +98,11 @@ void getdiffValue(int* valuebuffer)
 	_delay_us(LEDDELAY);
 	for ( x = 0; x < SENSOR_COUNT; x++)
 	{
-		valuebuffer[x] = abs(temp[x]-get_value(x));
-		if(valuebuffer[x] > 255)
+		uint16_t diff = abs(temp[x]-get_value(x));
+		if(diff > 255)
 			valuebuffer[x] = 255;
+		else
+			valuebuffer[x] = diff;
 	}
 }
 
@@ -113,5 +115,4 @@ void ledOff(void)
 {
 	PORTC &= ~(1 << PC2); //led off
 }
-
 
