@@ -10,18 +10,23 @@ void kalibrieren()
 {
   //mittelwerte auf 0 setzen
   for (int x = 0; x < 16; x++)
-    mittelwert[x] = 0;
+  {
+    mittelwert[x] = 0; 
+  }
 
   //10 Messwerte Aufnehmen und den mittelwert Berechnen
-  for (int x = 0; x < 10; x++)
+  for (int x = 0; x < 32; x++)
   {
     ring.getDifferenceValue(werte);
     for (int i = 0; i < 16; i++)
         mittelwert[i] += werte[i];
-    delay(10);
   }
+
   for (int x = 0; x < 16; x++)
-    mittelwert[x] /= 10;
+  {
+    mittelwert[x] /= 32;
+    mittelwert[x] += 20;
+  }
 }
 
 void messen()
@@ -33,11 +38,11 @@ void berechnen()
 {
   //Schwellwerte auswerten und Ergebnisse in 16 bit Typ Speichern
   ausgabe = 0;
-  for (int x = 0; x < 16; x++)
+  for (uint16_t x = 0; x < 16; x++)
   {
     if (werte[x] > mittelwert[x])
     {
-      ausgabe |= (1<<x);
+        ausgabe |= (1<<x);
     }
   }
 }
@@ -54,8 +59,8 @@ void lesen()
 {
 	uint8_t global_th_value = ring.getI2C(1);
 	if(global_th_value > 0)
-		for (int x = 0; x < 16; x++)
-			mittelwert[x] = global_th_value;
+	   for (int x = 0; x < 16; x++)
+	      mittelwert[x] = global_th_value;
 }
 
 int main (void) {
@@ -64,6 +69,6 @@ int main (void) {
     messen();
     berechnen();
     ausgeben();
-	lesen();
+    lesen();
   }                
 }
