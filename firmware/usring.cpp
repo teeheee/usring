@@ -46,7 +46,9 @@ void Usring::setI2CData(uint8_t id, uint8_t size, uint8_t* data)
 
 uint8_t Usring::getI2C(uint8_t id)
 {
-	return rxbuffer[id];
+	uint8_t tmp = rxbuffer[id];
+	rxbuffer[id] = 0;
+	return tmp;
 }
 
 void Usring::print(const char* string)
