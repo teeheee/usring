@@ -1,4 +1,5 @@
 #include "usring.h"
+#include <avr/wdt.h>
 
 Usring ring;
 
@@ -8,27 +9,18 @@ uint8_t werte_nach_filter[16];
 uint16_t ausgabe;
 uint8_t global_filter;
 
-void kalibrieren()
+void init()
 {
-  //mittelwerte auf 0 setzen
+  //mittelwerte auf 100 setzen
   for (int x = 0; x < 16; x++)
   {
-    mittelwert[x] = 0; 
+    mittelwert[x] = 100; 
+		werte_nach_filter[x] = 0;
+		werte[x] = 0;
   }
-
-  //10 Messwerte Aufnehmen und den mittelwert Berechnen
-  for (int x = 0; x < 32; x++)
-  {
-    ring.getDifferenceValue(werte);
-    for (int i = 0; i < 16; i++)
-        mittelwert[i] += werte[i];
-  }
-
-  for (int x = 0; x < 16; x++)
-  {
-    mittelwert[x] /= 32;
-    mittelwert[x] += 20;
-  }
+	global_filter = 0;
+	ausgabe = 0;
+	wdt_enable(WDTO_120MS);
 }
 
 void messen()
@@ -81,11 +73,13 @@ void lesen()
 }
 
 int main (void) {
-  kalibrieren();
+  init();
   while (1) {
     messen();
     berechnen();
     ausgeben();
     lesen();
+		if(PINC & (1<<PC4))
+			wdt_reset();
   }                
 }
