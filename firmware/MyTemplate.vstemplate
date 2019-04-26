@@ -21,6 +21,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="sensor.h">sensor.h</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="twislave.c">twislave.c</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="twislave.h">twislave.h</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="time.cpp">time.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="time.h">time.h</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="uart.c">uart.c</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="uart.h">uart.h</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="usring.cpp">usring.cpp</ProjectItem>

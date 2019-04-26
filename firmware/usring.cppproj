@@ -190,6 +190,12 @@
     <Compile Include="uart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="time.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="time.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="usring.cpp">
       <SubType>compile</SubType>
     </Compile>
