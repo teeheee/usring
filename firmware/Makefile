@@ -1,5 +1,5 @@
 MCU     = atmega8a
-F_CPU     = 14745000UL
+F_CPU     = 8000000UL
 PROJECT = main
 
 # ----- These configurations are quite likely not to be changed -----
@@ -24,35 +24,35 @@ OBJECTS = \
 
 
 CFLAGS = $(INC)
-CFLAGS += -Os -std=gnu99 
+CFLAGS += -Os -std=gnu99
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -Wall -Wstrict-prototypes
-CFLAGS += -DF_OSC=$(OSC)
+CFLAGS += -DF_CPU=$(F_CPU)
 CFLAGS += -mmcu=$(MCU)
 
 C++FLAGS = $(INC)
 C++FLAGS += -Os
 C++FLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 C++FLAGS += -Wall
-C++FLAGS += -DF_OSC=$(OSC)
+C++FLAGS += -DF_CPU=$(F_CPU)
 C++FLAGS += -mmcu=$(MCU)
 
 ASMFLAGS = $(INC)
 ASMFLAGS += -Os
 ASMFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 ASMFLAGS += -Wall -Wstrict-prototypes
-ASMFLAGS += -DF_OSC=$(OSC)
+ASMFLAGS += -DF_CPU=$(F_CPU)
 ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -mmcu=$(MCU)
 
 
 
 default: $(PROJECT).elf
-	avr-objcopy -j .text -j .data -O ihex $(PROJECT).elf $(PROJECT).hex 
+	avr-objcopy -j .text -j .data -O ihex $(PROJECT).elf $(PROJECT).hex
 
 %.elf: $(OBJECTS)
 	$(GCC) $(CFLAGS) $(OBJECTS) --output $@ $(LDFLAGS)
-	
+
 
 %.o : %.$(EXT_C)
 	$(GCC) $< $(CFLAGS) -c -o $@
@@ -64,7 +64,7 @@ default: $(PROJECT).elf
 	$(G++) $< $(ASMFLAGS) -c -o $@
 
 clean:
-	$(RM) $(PROJECT).elf $(OBJECTS) $(PROJECT).hex 
+	$(RM) $(PROJECT).elf $(OBJECTS) $(PROJECT).hex
 
 help:
 	@echo "usage:"
@@ -98,7 +98,7 @@ show-mcu:
 	$(G++) --help=target
 
 program:
-	avrdude -pm8 -Pusb -cavrispmkII  -B10 -u -U flash:w:$(PROJECT).hex 
+	avrdude -pm8 -Pusb -cavrispmkII  -B10 -u -U flash:w:$(PROJECT).hex
 
 AS7-tempate:
 	rm -f usring-2.1-AS7-template.zip
@@ -106,8 +106,4 @@ AS7-tempate:
 
 
 fuse:
-	avrdude -pm8 -Pusb -cavrispmkII -u -U lfuse:w:0xff:m -U hfuse:w:0xd9:m -B10
-
-
-
-
+	avrdude -pm8 -Pusb -cavrispmkII -u -U lfuse:w:0xe4:m -U hfuse:w:0xd9:m -B10

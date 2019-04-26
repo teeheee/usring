@@ -5,13 +5,11 @@
 #define USRING_I2C_ADDRESS 0x69
 #define USRING_BAUDRATE 9600UL
 
-#include <avr/io.h>         
+#include <avr/io.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include "time.h"
 
-
-
-#define delay(x) _delay_ms(x)
 
 #ifndef USRING_I2C_ADDRESS
 #warning (USRING_I2C_ADDRESS was not defined. Using 0x69 instead!!!)
@@ -26,8 +24,9 @@
 class Usring{
 public:
 	Usring();
-	
-	void getDifferenceValue(int* valueBuffer);
+
+	void getDifferenceValue(uint8_t* valueBuffer);
+	void getSingleValue(uint8_t* valueBuffer);
 
 	uint8_t getAnalogValue(uint8_t id);
 	void setLed(uint8_t state);

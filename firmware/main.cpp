@@ -1,75 +1,126 @@
 #include "usring.h"
+#include "time.h"
 #include <avr/wdt.h>
+#include <avr/io.h>
 
 Usring ring;
 
-int mittelwert[16];
-int werte[16];
-uint8_t werte_nach_filter[16];
-uint16_t ausgabe;
-uint8_t global_filter;
+uint8_t schwellwerte[16];
+uint8_t analogwerte[16];
+uint16_t DigitaleAusgabe;
 
+int hysteresis_counter[16];
+int global_filter;
+
+// Initialisiert alle Variablen
 void init()
 {
-  //mittelwerte auf 100 setzen
   for (int x = 0; x < 16; x++)
   {
-    mittelwert[x] = 100; 
-		werte_nach_filter[x] = 0;
-		werte[x] = 0;
+    schwellwerte[x] = 10;
+		analogwerte[x] = 0;
+    hysteresis_counter[x] = 0;
   }
 	global_filter = 0;
-	ausgabe = 0;
-	wdt_enable(WDTO_120MS);
+	DigitaleAusgabe = 0;
+	wdt_enable(WDTO_15MS);
 }
 
 void messen()
 {
-  ring.getDifferenceValue(werte);
+  //OPTIMIERUNGS PARAMETER
+  ring.getDifferenceValue(analogwerte); //misst die differenz aus LED an und aus (-> bessere Werte)
+  //ring.getSingleValue(analogwerte); //misst mit den LEDS immer an (-> schneller)
 }
 
+//Schwellwerte auswerten und Ergebnisse in 16 bit Typ Speichern
 void berechnen()
 {
-  //Schwellwerte auswerten und Ergebnisse in 16 bit Typ Speichern
-  ausgabe = 0;
-  for (uint16_t x = 0; x < 16; x++)
+  if(global_filter)
   {
-    if (werte[x] > mittelwert[x])
-	werte_nach_filter[x]++;
-    else
-	werte_nach_filter[x] = 0;
-    if (werte_nach_filter[x] > global_filter){
-        ausgabe |= (1<<x);
-	werte_nach_filter[x] = global_filter;
+    for (uint16_t x = 0; x < 16; x++)
+    {
+      if (analogwerte[x] > schwellwerte[x] && hysteresis_counter[x] < global_filter)
+      {
+        hysteresis_counter[x] += 1;
+      }
+      else if(hysteresis_counter[x] > -global_filter){
+        hysteresis_counter[x] -= 1;
+      }
+      if(hysteresis_counter[x] == global_filter)
+          DigitaleAusgabe |= (1<<x);
+      else if(hysteresis_counter[x] == -global_filter)
+          DigitaleAusgabe &= ~(1<<x);
+    }
+  }
+  else
+  {
+    DigitaleAusgabe = 0;
+    for (uint16_t x = 0; x < 16; x++)
+    {
+      if (analogwerte[x] > schwellwerte[x])
+          DigitaleAusgabe |= (1<<x);
     }
   }
 }
 
+//Daten in i2c Puffer Schreiben
 void ausgeben()
 {
-  //daten in i2c Puffer Schreiben
-  ring.setI2CData(0,2,(uint8_t*)&ausgabe);
+  ring.setI2CData(0,2,(uint8_t*)&DigitaleAusgabe);
   for (int x = 0; x < 16; x++)
-    ring.setI2C(x+2, werte[x]);
+    ring.setI2C(x+2, analogwerte[x]);
   for (int x = 0; x < 16; x++)
-    ring.setI2C(x+18, mittelwert[x]);
+    ring.setI2C(x+18, schwellwerte[x]);
 }
 
 void lesen()
 {
+  // lese filter Threshhold
 	uint8_t global_th_value = ring.getI2C(1);
 	if(global_th_value > 0)
 	   for (int x = 0; x < 16; x++)
-	      mittelwert[x] = global_th_value;
+	      schwellwerte[x] = global_th_value;
+
+  // lese globalen Schwellwert
 	uint8_t global_filter_value = ring.getI2C(2);
 	if(global_filter_value > 0)
 		global_filter = global_filter_value;
-  	for (int x = 0; x < 16; x++)
+
+  // lese einzelne Schwellwerte
+  for (int x = 0; x < 16; x++)
 	{
 		uint8_t local_th = ring.getI2C(x+3);
 		if(local_th > 0)
-			mittelwert[x] = local_th;
+			schwellwerte[x] = local_th;
 	}
+}
+
+
+
+void generateDebugInfo(){
+  static int max = 0;
+  static int min = 100;
+  static uint32_t start_time = 0;
+  int wert = (millis()-start_time);
+  if(wert > 0xff)
+    wert = 0xff;
+  if(wert > max)
+    max = wert;
+  if(wert < min)
+    min = wert;
+  ring.setI2C(40,min);
+  ring.setI2C(41,max);
+  if(MCUCSR & (1<<WDRF)){
+      ring.setI2C(39,1);// a watchdog reset occurred
+  }
+  if(MCUCSR & (1<<BORF)){
+      ring.setI2C(39,2);//  a brownout reset occurred
+  }
+  if(MCUCSR & (1<<EXTRF)){
+      ring.setI2C(39,3);//  an external reset occurred
+  }
+  start_time = millis();
 }
 
 int main (void) {
@@ -81,5 +132,6 @@ int main (void) {
     lesen();
 		if(PINC & (1<<PC4))
 			wdt_reset();
-  }                
+    //generateDebugInfo();
+  }
 }

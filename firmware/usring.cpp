@@ -8,14 +8,20 @@ extern "C" {
 
 Usring::Usring()
 {
+  init_timer();
   init_sensors();
   uart_init(UART_BAUD_SELECT(9600, F_CPU));
   init_twi_slave(USRING_I2C_ADDRESS);
 }
-	
-void Usring::getDifferenceValue(int* valueBuffer)
+
+void Usring::getDifferenceValue(uint8_t* valueBuffer)
 {
 	getdiffValue(valueBuffer);
+}
+
+void Usring::getSingleValue(uint8_t* valueBuffer)
+{
+	getsingleValue(valueBuffer);
 }
 
 uint8_t Usring::getAnalogValue(uint8_t id)

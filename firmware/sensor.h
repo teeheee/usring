@@ -3,7 +3,7 @@
  *
  * Created: 05.02.2016 20:01:00
  *  Author: alexander
- */ 
+ */
 
 
 #ifndef SENSOR_H_
@@ -11,6 +11,10 @@
 
 
 #include <avr/io.h>
+
+//OPTIMIERUNGS PARAMETER
+//#define LEDDELAY 800 //ein delay in Microsekunden damit die LEDS auch wirklich an sind und die Spannung stabil ist wenn die Messung gestartet wird
+#define LEDDELAY 0 //man kann es weglassen... dann gibt es aber nicht so gute Messwerte
 
 #define SENSOR_COUNT 16
 
@@ -32,10 +36,11 @@
 
 
 void init_sensors(void);
-uint16_t get_value(uint8_t index);
+uint8_t get_value(uint8_t index);
 void init_multiplexer(void);
-uint16_t ADC_Read( uint8_t channel );
-void getdiffValue(int* valuebuffer);
+uint8_t ADC_Read( uint8_t channel );
+void getdiffValue(uint8_t* valuebuffer);
+void getsingleValue(uint8_t* valuebuffer);
 void ledOn(void);
 void ledOff(void);
 
