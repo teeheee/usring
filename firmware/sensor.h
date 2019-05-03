@@ -13,8 +13,8 @@
 #include <avr/io.h>
 
 //OPTIMIERUNGS PARAMETER
-//#define LEDDELAY 800 //ein delay in Microsekunden damit die LEDS auch wirklich an sind und die Spannung stabil ist wenn die Messung gestartet wird
-#define LEDDELAY 0 //man kann es weglassen... dann gibt es aber nicht so gute Messwerte
+#define LEDDELAY 800 //ein delay in Microsekunden damit die LEDS auch wirklich an sind und die Spannung stabil ist wenn die Messung gestartet wird
+//#define LEDDELAY 0 //man kann es weglassen... dann gibt es aber nicht so gute Messwerte
 
 #define SENSOR_COUNT 16
 

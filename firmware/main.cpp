@@ -8,6 +8,7 @@ Usring ring;
 uint8_t schwellwerte[16];
 uint8_t analogwerte[16];
 uint16_t DigitaleAusgabe;
+uint16_t DigitaleAusgabe_ErsterKontakt;
 
 int hysteresis_counter[16];
 int global_filter;
@@ -44,7 +45,7 @@ void berechnen()
       {
         hysteresis_counter[x] += 1;
       }
-      else if(hysteresis_counter[x] > -global_filter){
+      else if(analogwerte[x] < schwellwerte[x] && hysteresis_counter[x] > -global_filter){
         hysteresis_counter[x] -= 1;
       }
       if(hysteresis_counter[x] == global_filter)
@@ -55,12 +56,18 @@ void berechnen()
   }
   else
   {
+	 uint16_t tmp = DigitaleAusgabe;
     DigitaleAusgabe = 0;
     for (uint16_t x = 0; x < 16; x++)
     {
       if (analogwerte[x] > schwellwerte[x])
           DigitaleAusgabe |= (1<<x);
     }
+	 if(DigitaleAusgabe && !tmp){
+	 	DigitaleAusgabe_ErsterKontakt = DigitaleAusgabe;
+	 } else if(!DigitaleAusgabe && !tmp){
+	 	DigitaleAusgabe_ErsterKontakt = 0;
+	 }
   }
 }
 
@@ -72,6 +79,7 @@ void ausgeben()
     ring.setI2C(x+2, analogwerte[x]);
   for (int x = 0; x < 16; x++)
     ring.setI2C(x+18, schwellwerte[x]);
+  ring.setI2CData(0,18+16,(uint8_t*)&DigitaleAusgabe_ErsterKontakt);
 }
 
 void lesen()

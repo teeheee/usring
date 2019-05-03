@@ -31,10 +31,10 @@ void init_sensors()
 	// je langsamer der ADC also je niedriger die Frequenz desdo rauscharmer die Messung
 	// laut http://www.openmusiclabs.com/learning/digital/atmega-adc/ sind bei 8 bit Auflösung 2 Mhz möglich
 	//ADCSRA = (1 << ADPS0);	 								    // Frequenzvorteiler 4 Mhz
-	ADCSRA = (1 << ADPS1); 										// Frequenzvorteiler 2 Mhz
+	//ADCSRA = (1 << ADPS1); 										// Frequenzvorteiler 2 Mhz
 	//ADCSRA = (1 << ADPS1) | (1 << ADPS0); 		// Frequenzvorteiler 1 Mhz
 	//ADCSRA = (1 << ADPS2); 										// Frequenzvorteiler 500 khz
-	//ADCSRA = (1 << ADPS2) | (1 << ADPS0); 		// Frequenzvorteiler 250 khz
+	ADCSRA = (1 << ADPS2) | (1 << ADPS0); 		// Frequenzvorteiler 250 khz
 	ADCSRA |= (1 << ADEN);      // ADC aktivieren
 
 	// Dummy readout
